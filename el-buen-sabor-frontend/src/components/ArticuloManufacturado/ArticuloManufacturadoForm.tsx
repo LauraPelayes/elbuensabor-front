@@ -13,6 +13,10 @@ interface ArticuloManufacturadoFormProps {
     onCancel: () => void; // Función para cancelar y cerrar el formulario
 }
 
+const CLOUDINARY_CLOUD_NAME = 'deagcdoak'; // Reemplaza con tu Cloud NameAdd commentMore actions
+const CLOUDINARY_UPLOAD_PRESET = 'ElBuenSabor'; // Reemplaza con tu Upload Preset
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
 const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ articulo, onSave, onCancel }) => {
     const [formData, setFormData] = useState<ArticuloManufacturado>(
         articulo || new ArticuloManufacturado('', 0, 0, '', 0, '', [], undefined, undefined, undefined, undefined, undefined, undefined)
@@ -27,6 +31,7 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
     // Estados para la carga y errores
     const [loadingMasterData, setLoadingMasterData] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     // Instancia del servicio de artículos, memorizada para estabilidad
     const articuloService = useMemo(() => new ArticuloService(), []);
@@ -69,6 +74,36 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
             ...prev,
             [name]: name === 'precioVenta' || name === 'tiempoEstimadoMinutos' ? Number(value) : value,
         }));
+    };
+
+    //Cloudinary
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        setError(null);
+
+        const cloudinaryFormData = new FormData();
+        cloudinaryFormData.append('file', file);
+        cloudinaryFormData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        try {
+            const response = await axios.post(CLOUDINARY_UPLOAD_URL, cloudinaryFormData);
+            const secureUrl = response.data.secure_url;
+
+            // Actualiza el formData con la nueva URL de la imagen
+            setFormData(prev => ({
+                ...prev,
+                imagen: new Imagen(secureUrl, prev.imagen?.id) // Asume que el constructor de Imagen acepta (denominacion, id)
+            }));
+
+        } catch (uploadError) {
+            console.error('Error al subir la imagen a Cloudinary:', uploadError);
+            setError('Error al subir la imagen. Inténtalo de nuevo.');
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     // --- Lógica para la gestión de detalles (ingredientes) ---
@@ -178,6 +213,14 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
         }
     };
 
+    // **VALIDACIÓN DE IMAGEN (OPCIONAL): Puedes requerir que se suba una imagen**Add commentMore actions
+    if (!formData.imagen?.denominacion) {
+        // setError('Debe subir una imagen para el artículo.');
+        // return;
+        // O manejarlo como opcional, permitiendo imagen: undefined si no se sube nada.
+        // En ese caso, asegúrate que el backend maneje imagenId null o undefined.
+    }
+
     if (loadingMasterData) {
         return <p>Cargando datos del formulario...</p>;
     }
@@ -227,30 +270,37 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
                 <div style={{ marginBottom: '15px' }}>
                     <label>URL de Imagen:</label>
                     <input
-                        type="text"
-                        name="imagenDenominacion"
-                        value={formData.imagen?.denominacion || ''}
-                        onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            imagen: e.target.value.trim() !== ''
-                                ? new Imagen(e.target.value.trim(), prev.imagen?.id) // Usar clase Imagen
-                                : undefined // Si el campo está vacío, la imagen es nula
-                        }))}
-                        placeholder="Pega la URL de la imagen aquí"
+                        type="file"
+                        accept="image/*" // Aceptar solo archivos de imagen
+                        onChange={handleImageUpload}
                         style={{ width: '100%', padding: '8px' }}
+                        disabled={isUploading} // Deshabilitar mientras se sube
                     />
-                    {formData.imagen?.denominacion && ( // Mostrar previsualización si hay URL
-                        <div style={{ marginTop: '10px' }}>
-                            <img src={formData.imagen.denominacion} alt="Previsualización" style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'cover' }} />
+                    {isUploading && <p>Subiendo imagen...</p>}
+                    {/* Previsualización de la imagen subida */}
+                    {formData.imagen?.denominacion && (
+                        <div style={{marginTop: '10px'}}>
+                            <img src={formData.imagen.denominacion} alt="Previsualización"
+                                 style={{
+                                     maxWidth: '150px',
+                                     maxHeight: '150px',
+                                     objectFit: 'cover',
+                                     border: '1px solid #ccc'
+                            }}/>
+                            <p style={{fontSize: '0.8em', color: '#555'}}>URL: {formData.imagen.denominacion}</p>
                         </div>
                     )}
                 </div>
 
                 {/* Sección de Detalles (Ingredientes) */}
-                <hr style={{ margin: '20px 0' }} />
+                <hr style={{margin: '20px 0'}}/>
                 <h4>Ingredientes:</h4>
                 {formData.detalles.map((detalle, index) => (
-                    <div key={index} style={{ border: '1px dashed #ccc', padding: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div key={index} style={{
+                        border: '1px dashed #ccc',
+                        padding: '10px',
+                        marginBottom: '10px',
+                        display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <label>Insumo:</label>
                         <select
                             value={detalle.articuloInsumoId || ''}
@@ -288,11 +338,12 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
                 </div>
 
                 {/* Botones de acción */}
+                {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
                 <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-                    <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                        {formData.id ? 'Actualizar' : 'Guardar'}
+                    <button type="submit" disabled={isUploading} style={{ padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                        {isUploading ? 'Espere...' : (formData.id ? 'Actualizar' : 'Guardar')}
                     </button>
-                    <button type="button" onClick={onCancel} style={{ padding: '10px 20px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                    <button type="button" onClick={onCancel} disabled={isUploading} style={{ padding: '10px 20px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                         Cancelar
                     </button>
                 </div>
