@@ -7,13 +7,15 @@ import { Categoria } from '../../models/Categoria/Categoria';
 import { Imagen } from '../../models/Categoria/Imagen'; // Necesaria para el constructor de Imagen
 import { ArticuloService } from '../../services/ArticuloService';
 import axios from 'axios'; // ¡AÑADE ESTA LÍNEA!
+import CategoriaForm from '../Categoria/CategoriaForm';
 interface ArticuloManufacturadoFormProps {
     articulo?: ArticuloManufacturado | null; // El artículo a editar (nulo para creación)
     onSave: () => void; // Función a llamar después de guardar (para recargar la lista)
     onCancel: () => void; // Función para cancelar y cerrar el formulario
 }
 
-const CLOUDINARY_CLOUD_NAME = 'deagcdoak'; // Reemplaza con tu Cloud NameAdd commentMore actions
+// **CONFIGURACIÓN DE CLOUDINARY**Add commentMore actions
+const CLOUDINARY_CLOUD_NAME = 'deagcdoak'; // Reemplaza con tu Cloud Name
 const CLOUDINARY_UPLOAD_PRESET = 'ElBuenSabor'; // Reemplaza con tu Upload Preset
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
@@ -25,13 +27,13 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
     // Estados para datos maestros (listas para selectores)
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [insumos, setInsumos] = useState<ArticuloInsumo[]>([]);
+    const [isUploading, setIsUploading] = useState<boolean>(false); // Estado para la carga de imagen
     // Ya no necesitamos unidadesMedida para el ArticuloManufacturado directamente en el DTO
     // const [unidadesMedida, setUnidadesMedida] = useState<UnidadMedida[]>([]); // Si ArticuloManufacturado usa UnidadMedida
 
     // Estados para la carga y errores
     const [loadingMasterData, setLoadingMasterData] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     // Instancia del servicio de artículos, memorizada para estabilidad
     const articuloService = useMemo(() => new ArticuloService(), []);
@@ -76,7 +78,8 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
         }));
     };
 
-    //Cloudinary
+    // --- Lógica para la gestión de detalles (ingredientes) ---
+// **NUEVO: Manejador para la subida de archivos a Cloudinary**Add commentMore actions
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -105,9 +108,6 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
             setIsUploading(false);
         }
     };
-
-    // --- Lógica para la gestión de detalles (ingredientes) ---
-
     // Manejador para cambiar la cantidad de un detalle
     const handleDetalleCantidadChange = (index: number, value: string) => {
         const newDetalles = [...formData.detalles];
@@ -178,6 +178,13 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
         }
         // Puedes añadir más validaciones aquí, ej. que todos los detalles tengan un insumoId válido
 
+        // **VALIDACIÓN DE IMAGEN (OPCIONAL)
+        if (!formData.imagen?.denominacion) {
+            // setError('Debe subir una imagen para el artículo.');
+            // return;
+            // O manejarlo como opcional, permitiendo imagen: undefined si no se sube nada.
+            // En ese caso, asegúrate que el backend maneje imagenId null o undefined.
+        }
         try {
             if (formData.id) {
                 // Actualizar artículo existente
@@ -212,14 +219,6 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
             console.error(err);
         }
     };
-
-    // **VALIDACIÓN DE IMAGEN (OPCIONAL): Puedes requerir que se suba una imagen**Add commentMore actions
-    if (!formData.imagen?.denominacion) {
-        // setError('Debe subir una imagen para el artículo.');
-        // return;
-        // O manejarlo como opcional, permitiendo imagen: undefined si no se sube nada.
-        // En ese caso, asegúrate que el backend maneje imagenId null o undefined.
-    }
 
     if (loadingMasterData) {
         return <p>Cargando datos del formulario...</p>;
@@ -264,11 +263,12 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
                             <option key={cat.id} value={cat.id}>{cat.denominacion}</option>
                         ))}
                     </select>
+                    <p id='createCategory' className='create-category-btn'>Crear categoria +</p>
                 </div>
 
                 {/* Campo para URL de Imagen (ahora es un input de texto) */}
-                <div style={{ marginBottom: '15px' }}>
-                    <label>URL de Imagen:</label>
+                <div style={{marginBottom: '15px'}}>
+                    <label>Imagen del Artículo:</label>
                     <input
                         type="file"
                         accept="image/*" // Aceptar solo archivos de imagen
@@ -279,28 +279,26 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
                     {isUploading && <p>Subiendo imagen...</p>}
                     {/* Previsualización de la imagen subida */}
                     {formData.imagen?.denominacion && (
+                        <div style={{ marginTop: '10px' }}>
+                    {formData.imagen?.denominacion && ( // Mostrar previsualización si hay URL
                         <div style={{marginTop: '10px'}}>
-                            <img src={formData.imagen.denominacion} alt="Previsualización"
-                                 style={{
-                                     maxWidth: '150px',
-                                     maxHeight: '150px',
-                                     objectFit: 'cover',
-                                     border: '1px solid #ccc'
+                            <img src={formData.imagen.denominacion} alt="Previsualización" style={{
+                                maxWidth: '150px',
+                                maxHeight: '150px',
+                                objectFit: 'cover',
+                                border: '1px solid #ccc'
                             }}/>
                             <p style={{fontSize: '0.8em', color: '#555'}}>URL: {formData.imagen.denominacion}</p>
                         </div>
                     )}
+                        </div>
+                    )}
                 </div>
-
-                {/* Sección de Detalles (Ingredientes) */}
-                <hr style={{margin: '20px 0'}}/>
+                    {/* Sección de Detalles (Ingredientes) */}
+                        <hr style={{margin: '20px 0'}} />
                 <h4>Ingredientes:</h4>
                 {formData.detalles.map((detalle, index) => (
-                    <div key={index} style={{
-                        border: '1px dashed #ccc',
-                        padding: '10px',
-                        marginBottom: '10px',
-                        display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div key={index} style={{border: '1px dashed #ccc', padding: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <label>Insumo:</label>
                         <select
                             value={detalle.articuloInsumoId || ''}
@@ -348,6 +346,13 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
                     </button>
                 </div>
             </form>
+            <CategoriaForm
+                categorias={categorias}
+                reloadCategorias={async () => {
+                    const updated = await articuloService.getAllCategorias();
+                    setCategorias(updated);
+                }}
+            />
         </div>
     );
 };
