@@ -280,9 +280,15 @@ const ArticuloManufacturadoForm: React.FC<ArticuloManufacturadoFormProps> = ({ a
                         </button>
                     </div>
                 ))}
-                <button type="button" onClick={handleAddDetalle} style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginBottom: '15px' }}>
-                    Añadir Ingrediente
-                </button>
+
+                <div className='flex gap-4 justify-center'>
+                    {/* <button type="button" onClick={handleCreateIngrediente} style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginBottom: '15px' }}>
+                        Crear Ingrediente
+                    </button> */}
+                    <button type="button" onClick={handleAddDetalle} style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginBottom: '15px' }}>
+                        Añadir Ingrediente
+                    </button>
+                </div>
 
                 {/* Costo Total del Producto */}
                 <div style={{ marginTop: '20px', padding: '10px', borderTop: '1px solid #eee', fontSize: '1.1em', fontWeight: 'bold' }}>

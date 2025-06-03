@@ -2,12 +2,18 @@
 import React from 'react';
 import ArticuloManufacturadoList from './components/ArticuloManufacturado/ArticuloManufacturadoList';
 import './App.css'; // Si tienes estilos globales
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Ingredientes from './admin/pages/ingredientes';
+
 
 function App() {
   return (
-    <div className="App">
-      <ArticuloManufacturadoList />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<ArticuloManufacturadoList />} />
+        <Route path="/admin/pages/ingredientes" element={<Ingredientes />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -105,4 +107,11 @@ button:focus-visible {
   color: green;
   cursor: pointer;
   text-decoration: underline;
+}
+
+/* Forms */
+input,
+select,
+textarea {
+  background-color: white;
 }
