@@ -92,6 +92,17 @@ export class ArticuloService {
         }
     }
 
+    // Borrar articulo
+    deleteArticulo(id: number): Promise<void> {
+	return fetch(`${API_BASE_URL}/${id}`, {
+		method: 'DELETE',
+	}).then(response => {
+		if (!response.ok) {
+			throw new Error('Error al eliminar el ingrediente.');
+		}
+	});
+}
+
     // --- Métodos para ArticuloInsumo (ABM de Insumos) ---
 
     /**
