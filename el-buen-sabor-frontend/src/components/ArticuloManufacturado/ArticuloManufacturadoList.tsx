@@ -75,68 +75,88 @@ const ArticuloManufacturadoList: React.FC = () => {
     }
 
     return (
-        <div className="articulo-manufacturado-list">
-            <h2>Gestión de Artículos Manufacturados</h2>
+        <div className="articulo-manufacturado-list px-4 py-6">
+  <h2 className="text-2xl font-semibold mb-4">Gestión de Artículos Manufacturados</h2>
 
-            {/* Botón de Crear Nuevo Artículo */}
-            <button onClick={handleCreateClick} style={{ marginBottom: '20px', padding: '10px 20px', fontSize: '16px' }}>
-                Crear Nuevo Artículo
-            </button>
+  {/* Botón de Crear Nuevo Artículo */}
+  <button
+    onClick={handleCreateClick}
+    className="mb-6 px-6 py-2 text-base bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+  >
+    Crear Nuevo Artículo
+  </button>
 
-            {/* Mostrar el formulario si showForm es true */}
-            {showForm && (
-                <div style={{ border: '1px solid #ccc', padding: '20px', marginBottom: '20px' }}>
-                    <ArticuloManufacturadoForm
-                        articulo={selectedArticulo}
-                        onSave={handleFormSave}
-                        onCancel={handleFormCancel}
-                    />
-                </div>
-            )}
+  {/* Mostrar el formulario si showForm es true */}
+  {showForm && (
+    <div className="border border-gray-300 p-6 rounded mb-6 bg-white shadow">
+      <ArticuloManufacturadoForm
+        articulo={selectedArticulo}
+        onSave={handleFormSave}
+        onCancel={handleFormCancel}
+      />
+    </div>
+  )}
 
-            {/* Listado de Artículos */}
-            {articulosManufacturados.length === 0 ? (
-                <p>No hay artículos manufacturados para mostrar.</p>
-            ) : (
-                <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Denominación</th>
-                            <th>Precio Venta</th>
-                            <th>Descripción</th>
-                            <th>Tiempo Estimado (min)</th>
-                            <th>Categoría</th>
-                            <th>Imagen</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {articulosManufacturados.map((articulo) => (
-                            <tr key={articulo.id}>
-                                <td>{articulo.id}</td>
-                                <td>{articulo.denominacion}</td>
-                                <td>${articulo.precioVenta?.toFixed(2)}</td>
-                                <td>{articulo.descripcion}</td>
-                                <td>{articulo.tiempoEstimadoMinutos}</td>
-                                <td>{articulo.categoria?.denominacion || 'N/A'}</td>
-                                <td>
-                                    {articulo.imagen?.denominacion ? (
-                                        <img src={articulo.imagen.denominacion} alt={articulo.denominacion} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
-                                    ) : (
-                                        'Sin imagen'
-                                    )}
-                                </td>
-                                <td>
-                                    <button onClick={() => handleEditClick(articulo)}>Editar</button>
-                                    <button onClick={() => handleDeleteClick(articulo.id!, articulo.denominacion)}>Eliminar</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-        </div>
+  {/* Listado de Artículos */}
+  {articulosManufacturados.length === 0 ? (
+    <p className="text-gray-500">No hay artículos manufacturados para mostrar.</p>
+  ) : (
+    <div className="overflow-x-auto">
+      <table className="w-full border border-gray-300 text-sm text-left">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-4 py-2 border">ID</th>
+            <th className="px-4 py-2 border">Denominación</th>
+            <th className="px-4 py-2 border">Precio Venta</th>
+            <th className="px-4 py-2 border">Descripción</th>
+            <th className="px-4 py-2 border">Tiempo Estimado (min)</th>
+            <th className="px-4 py-2 border">Categoría</th>
+            <th className="px-4 py-2 border">Imagen</th>
+            <th className="px-4 py-2 border">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {articulosManufacturados.map((articulo) => (
+            <tr key={articulo.id} className="hover:bg-gray-50">
+              <td className="px-4 py-2 border">{articulo.id}</td>
+              <td className="px-4 py-2 border">{articulo.denominacion}</td>
+              <td className="px-4 py-2 border">${articulo.precioVenta?.toFixed(2)}</td>
+              <td className="px-4 py-2 border">{articulo.descripcion}</td>
+              <td className="px-4 py-2 border">{articulo.tiempoEstimadoMinutos}</td>
+              <td className="px-4 py-2 border">{articulo.categoria?.denominacion || 'N/A'}</td>
+              <td className="px-4 py-2 border">
+                {articulo.imagen?.denominacion ? (
+                  <img
+                    src={articulo.imagen.denominacion}
+                    alt={articulo.denominacion}
+                    className="w-12 h-12 object-cover rounded"
+                  />
+                ) : (
+                  <span className="text-gray-400">Sin imagen</span>
+                )}
+              </td>
+              <td className="px-4 py-2 border space-x-2">
+                <button
+                  onClick={() => handleEditClick(articulo)}
+                  className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => handleDeleteClick(articulo.id!, articulo.denominacion)}
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>
+
     );
 };
 
