@@ -8,7 +8,7 @@ export interface IPedidoDTO {
 }
 
 export enum TipoEnvio {
-  RETIRO = "RETIRO",
+  RETIRO_EN_LOCAL = "RETIRO_EN_LOCAL",
   DELIVERY = "DELIVERY",
 }
 
@@ -16,6 +16,7 @@ export enum FormaPago {
   EFECTIVO = "EFECTIVO",
   TARJETA = "TARJETA",
   TRANSFERENCIA = "TRANSFERENCIA",
+  MERCADO_PAGO = "MERCADO_PAGO"
 }
 
 export interface ICreateDetallePedidoDTO {

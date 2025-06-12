@@ -2,9 +2,9 @@
 
 import { ArrowLeft, Plus, Minus, Trash2, ShoppingBag, CreditCard, Truck, Shield, Heart } from 'lucide-react'
 import { useCart } from "../../Cart/context/cart-context"
-import { PedidoService } from '../../../services/PedidoService'
-import { FormaPago, TipoEnvio } from '../../../models/DTO/IPedidoDTO';
-import type {IPedidoDTO} from '../../../models/DTO/IPedidoDTO';
+// import { PedidoService } from '../../../services/PedidoService'
+// import { FormaPago, TipoEnvio } from '../../../models/DTO/IPedidoDTO';
+// import type {IPedidoDTO} from '../../../models/DTO/IPedidoDTO';
 
 export default function CartPage() {
   const { items, totalItems, totalAmount, updateQuantity, removeFromCart, clearCart } = useCart()
@@ -12,36 +12,38 @@ export default function CartPage() {
   const deliveryFee = totalAmount >= 25 ? 0 : 3.99
   const finalTotal = totalAmount + deliveryFee
 
-  const pedidoService = new PedidoService();
+  // const pedidoService = new PedidoService();
 
   // Crear pedido tipo pedido DTO
-  const crearPedido = async () => {
-    // HARDCODEADOOO
-    const pedido: IPedidoDTO = {
-      clienteId: 1, // Reemplazá con el ID real del cliente logueado
-      domicilioEntregaId: 1, // O undefined si es RETIRO
-      tipoEnvio: TipoEnvio.DELIVERY,
-      formaPago: FormaPago.EFECTIVO,
-      sucursalId: 1, // Reemplazá con la sucursal seleccionada
-      detallesPedidos: items.map((item) => ({
-        cantidad: 3,
-        articuloManufacturadoId: 100,
-        articuloInsumoId: 1,
-      })),
-    }
+  // const crearPedido = async () => {
+  //   // HARDCODEADOOO
+  //   // Si lo retira MP y Efectivo
+  //   // Si no solo MP
+  //   const pedido: IPedidoDTO = {
+  //     clienteId: 1, // Reemplazá con el ID real del cliente logueado
+  //     domicilioEntregaId: 1, // O undefined si es RETIRO
+  //     tipoEnvio: TipoEnvio.DELIVERY,
+  //     formaPago: FormaPago.EFECTIVO,
+  //     sucursalId: 1, // Reemplazá con la sucursal seleccionada
+  //     detallesPedidos: items.map((item) => ({
+  //       cantidad: 3,
+  //       articuloManufacturadoId: 100,
+  //       articuloInsumoId: 1,
+  //     })),
+  //   }
 
-    console.log("PEDIDO:", pedido)
+  //   console.log("PEDIDO:", pedido)
 
-    try {
-      const response = await pedidoService.sendPedido(pedido)
-      console.log("Pedido creado con éxito:", response)
-      clearCart()
-      // Podés redirigir al usuario o mostrar una confirmación
-    } catch (error) {
-      console.error("Error al crear el pedido:", error)
-      alert("No se pudo crear el pedido. Intentalo de nuevo.")
-    }
-  }
+  //   try {
+  //     const response = await pedidoService.sendPedido(pedido)
+  //     console.log("Pedido creado con éxito:", response)
+  //     clearCart()
+  //     // Podés redirigir al usuario o mostrar una confirmación
+  //   } catch (error) {
+  //     console.error("Error al crear el pedido:", error)
+  //     alert("No se pudo crear el pedido. Intentalo de nuevo.")
+  //   }
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -210,10 +212,10 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <button onClick={() => crearPedido()} className="w-full bg-orange-500 text-white py-4 rounded-xl font-semibold hover:bg-orange-600 transition duration-200 flex items-center justify-center space-x-2">
+                <a href='/checkout' className="w-full bg-orange-500 text-white py-4 rounded-xl font-semibold hover:bg-orange-600 transition duration-200 flex items-center justify-center space-x-2">
                   <CreditCard className="w-5 h-5" />
                   <span>Proceder al Pago</span>
-                </button>
+                </a>
 
                 <div className="mt-4 space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-gray-500">
@@ -224,24 +226,6 @@ export default function CartPage() {
                     <Shield className="w-4 h-4" />
                     <span>Pago 100% seguro</span>
                   </div>
-                </div>
-              </div>
-
-              {/* Información adicional */}
-              <div className="bg-white rounded-2xl shadow-sm p-6">
-                <h4 className="font-semibold text-gray-900 mb-4">Información de entrega</h4>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Dirección:</span>
-                    <span className="font-medium">Calle Principal 123</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Teléfono:</span>
-                    <span className="font-medium">+1 234 567 8900</span>
-                  </div>
-                  <button className="text-orange-500 hover:text-orange-600 font-medium transition duration-200">
-                    Cambiar información
-                  </button>
                 </div>
               </div>
             </div>
