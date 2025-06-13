@@ -93,7 +93,7 @@ export default function CheckoutPage() {
         try {
           // Create MercadoPago preference
           const preferenceId = await mercadoPagoService.createPreference(pedido)
-		  console.log("PREF ID ", preferenceId);
+		      console.log("PREF ID ", preferenceId);
 
           // Store order in localStorage to retrieve after payment
           localStorage.setItem("pendingOrderData", JSON.stringify(pedido))
@@ -101,12 +101,12 @@ export default function CheckoutPage() {
           // Initialize MercadoPago checkout
           if (window.MercadoPago) {
             const mp = new window.MercadoPago(
-              import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY || "TEST-a54e2ed6-1111-2222-3333-0a8eb4728882",
+              import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY || "TEST-6be97ca2-e8f3-4833-a68b-42bbd8a6b9dd",
               {
                 locale: "es-AR",
               },
             )
-
+            console.log("Mercado Pago: ", mp)
             // Create checkout button
             const checkout = mp.checkout({
               preference: {
