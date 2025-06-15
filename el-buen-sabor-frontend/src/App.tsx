@@ -1,6 +1,6 @@
 // src/App.tsx
 import React from 'react';
-import ArticuloManufacturadoList from './components/ArticuloManufacturado/ArticuloManufacturadoList';
+import ArticuloManufacturadoList from './admin/ArticuloManufacturado/ArticuloManufacturadoList';
 import './App.css'; // Si tienes estilos globales
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Ingredientes from './admin/pages/ingredientes';

@@ -7,7 +7,7 @@ import { Categoria } from '../../models/Categoria/Categoria';
 import { Imagen } from '../../models/Categoria/Imagen'; // Necesaria para el constructor de Imagen
 import { ArticuloService } from '../../services/ArticuloService';
 import axios from 'axios'; // ¡AÑADE ESTA LÍNEA!
-import CategoriaForm from '../Categoria/CategoriaForm';
+import CategoriaForm from '../../components/Categoria/CategoriaForm';
 interface ArticuloManufacturadoFormProps {
     articulo?: ArticuloManufacturado | null; // El artículo a editar (nulo para creación)
     onSave: () => void; // Función a llamar después de guardar (para recargar la lista)
