@@ -101,7 +101,7 @@ export default function CheckoutPage() {
           // Initialize MercadoPago checkout
           if (window.MercadoPago) {
             const mp = new window.MercadoPago(
-              import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY,
+              import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY || "TEST-6be97ca2-e8f3-4833-a68b-42bbd8a6b9dd",
               {
                 locale: "es-AR",
               },
