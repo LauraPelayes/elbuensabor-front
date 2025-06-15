@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowLeft, Plus, Minus, Trash2, ShoppingBag, CreditCard, Truck, Shield, Heart } from 'lucide-react'
-import { useCart } from "../../Cart/context/cart-context"
+import { useCart } from "../../components/Cart/context/cart-context"
 // import { PedidoService } from '../../../services/PedidoService'
 // import { FormaPago, TipoEnvio } from '../../../models/DTO/IPedidoDTO';
 // import type {IPedidoDTO} from '../../../models/DTO/IPedidoDTO';
@@ -52,9 +52,9 @@ export default function CartPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <button className="p-2 hover:bg-gray-100 rounded-full transition duration-200">
+              <a href='/landing' className="p-2 hover:bg-gray-100 rounded-full transition duration-200">
                 <ArrowLeft className="w-6 h-6" />
-              </button>
+              </a>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Mi Carrito</h1>
                 <p className="text-sm text-gray-500">{totalItems} productos</p>
@@ -76,9 +76,9 @@ export default function CartPage() {
                 Parece que aún no has agregado ningún producto a tu carrito. ¡Explora nuestro menú y encuentra algo
                 delicioso!
               </p>
-              <button className="bg-orange-500 text-white px-8 py-3 rounded-full hover:bg-orange-600 transition duration-200 font-medium">
+              <a href='/landing' className="bg-orange-500 text-white px-8 py-3 rounded-full hover:bg-orange-600 transition duration-200 font-medium">
                 Explorar Productos
-              </button>
+              </a>
             </div>
           </div>
         ) : (

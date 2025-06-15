@@ -17,11 +17,6 @@ export default function Landing() {
 
 	const articuloService = new ArticuloService();
 
-	// Función para redirigir al carrito
-	const navigateToCart = () => {
-		//window.location.href = "/cart" // Ejemplo simple
-	}
-
 	// Función para cargar los artículos (ahora puede ser reutilizada)
 	const fetchArticulos = async () => {
 		try {
@@ -113,7 +108,7 @@ export default function Landing() {
 			{totalItems > 0 && (
 				<a
 					href="/cart"
-					className="fixed bottom-[30px] right-[30px] rounded-full font-bold bg-green-500 p-8 z-50 text-white"
+					className="text-white fixed bottom-[30px] right-[30px] rounded-full font-bold bg-green-500 p-8 z-50 text-white"
 				>
 					IR AL CARRITO
 				</a>

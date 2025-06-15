@@ -4,11 +4,11 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { ArrowLeft, CreditCard, MapPin, Truck, ShoppingBag, Check } from "lucide-react"
-import { useCart } from "../../Cart/context/cart-context"
-import { PedidoService } from "../../../services/PedidoService"
-import { MercadoPagoService } from "../../../services/MercadoPagoService"
-import { FormaPago, TipoEnvio } from "../../../models/DTO/IPedidoDTO"
-import type { IPedidoDTO } from "../../../models/DTO/IPedidoDTO"
+import { useCart } from "../../components/Cart/context/cart-context"
+import { PedidoService } from "../../services/PedidoService"
+import { MercadoPagoService } from "../../services/MercadoPagoService"
+import { FormaPago, TipoEnvio } from "../../models/DTO/IPedidoDTO"
+import type { IPedidoDTO } from "../../models/DTO/IPedidoDTO"
 import { useNavigate } from "react-router-dom"
 
 // MercadoPago SDK script loader

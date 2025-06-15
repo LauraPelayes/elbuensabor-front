@@ -5,9 +5,12 @@ import './App.css'; // Si tienes estilos globales
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Ingredientes from './admin/pages/ingredientes';
 import Landing from './components/Landing/Landing';
-import CartPage from './components/pages/cart/CartPage';
-import Checkout from './components/pages/checkout/Checkout';
-import OrderConfirmationPage from './components/pages/order-confirmation/OrderConfirmation';
+import CartPage from './pages/cart/CartPage';
+import Checkout from './pages/checkout/Checkout';
+import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmation';
+import LoginPage from './pages/auth/login-page';
+import RegisterPage from './pages/auth/register-page';
+import ExplorarPage from './pages/explore/explore-page';
 
 function App() {
   return (
@@ -19,6 +22,11 @@ function App() {
         <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
         <Route path="/" element={<ArticuloManufacturadoList />} />
         <Route path="/admin/pages/ingredientes" element={<Ingredientes />} />
+        {/* AUTH */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        {/* Explore */}
+        <Route path="/explore" element={<ExplorarPage />} />
       </Routes>
     </Router>
   );
