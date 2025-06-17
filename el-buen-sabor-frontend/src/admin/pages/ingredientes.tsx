@@ -4,6 +4,9 @@ import { useEffect, useState } from "react"
 import type { ArticuloInsumo } from "../../models/Articulos/ArticuloInsumo"
 import { ArticuloService } from "../../services/ArticuloService"
 import { Pencil, Trash2, Plus, Check, X, Loader2 } from "lucide-react"
+import { CategoriaService } from '../../services/CategoriaService.';
+import { Categoria } from "../../models/Categoria/Categoria"
+import { all } from "axios"
 
 export default function Ingredientes() {
   const [ingredientes, setIngredientes] = useState<ArticuloInsumo[]>([])
@@ -19,6 +22,7 @@ export default function Ingredientes() {
     stockMinimo: 0,
     precioCompra: 0,
   })
+  const [categoriasList, setCategoriasList] = useState<Categoria[]>([])
 
   const articuloService = new ArticuloService()
 
@@ -39,7 +43,7 @@ export default function Ingredientes() {
   const handleEliminar = async (id: number) => {
     try {
       await articuloService.deleteArticulo(id)
-      setIngredientes((prev) => prev.filter((ing) => ing.id !== id))
+      // setIngredientes((prev) => prev.filter((ing) => ing.id !== id))
     } catch (error) {
       console.error(error)
       alert("Error al eliminar el ingrediente.")
@@ -54,27 +58,27 @@ export default function Ingredientes() {
   const guardarCambios = async () => {
     console.log("ENTRA", ingredienteEditando)
     if (!ingredienteEditando?.id) return
-      try {
-        const payload = {
-          ...formData,
-          categoriaId: formData.categoria?.id,
-          unidadMedidaId: formData.unidadMedida?.id,
-          imagenId: formData.imagen?.id,
-        }
-        console.log("Payload ", payload);
-        const actualizado = await articuloService.updateArticuloInsumo(
-          ingredienteEditando.id,
-          payload as ArticuloInsumo
-        )
-        console.log("Articulo actualizado: ", actualizado)
-        setIngredientes((prev) =>
-          prev.map((i) => (i.id === actualizado.id ? actualizado : i))
-        )
-        setIngredienteEditando(null)
-      } catch (err) {
-        console.error("Error al actualizar:", err)
-        alert("Hubo un error al actualizar el ingrediente.")
+    try {
+      const payload = {
+        ...formData,
+        categoriaId: formData.categoria?.id,
+        unidadMedidaId: formData.unidadMedida?.id,
+        imagenId: formData.imagen?.id,
       }
+      console.log("Payload ", payload);
+      const actualizado = await articuloService.updateArticuloInsumo(
+        ingredienteEditando.id,
+        payload as ArticuloInsumo
+      )
+      console.log("Articulo actualizado: ", actualizado)
+      setIngredientes((prev) =>
+        prev.map((i) => (i.id === actualizado.id ? actualizado : i))
+      )
+      setIngredienteEditando(null)
+    } catch (err) {
+      console.error("Error al actualizar:", err)
+      alert("Hubo un error al actualizar el ingrediente.")
+    }
   }
 
 
@@ -97,7 +101,16 @@ export default function Ingredientes() {
 
   useEffect(() => {
     fetchIngredientes()
+    fetchCategorias();
   }, [])
+
+  // LISTAR CATEGORIAS
+  const categoriaService = new CategoriaService();
+  const fetchCategorias = async () => {
+    const allCategorias = await categoriaService.getAll()
+    console.log("CATEGORIAS: ", allCategorias)
+    setCategoriasList(allCategorias)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -169,7 +182,7 @@ export default function Ingredientes() {
               placeholder="Stock mínimo"
               className="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
             />
-            <input
+            {/* <input
               type="number"
               value={nuevoIngrediente.categoria?.id || ""}
               onChange={(e) =>
@@ -180,7 +193,31 @@ export default function Ingredientes() {
               }
               placeholder="ID Categoría"
               className="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
-            />
+            /> */}
+            <select
+              value={nuevoIngrediente.categoria?.id ?? ""}
+              onChange={(e) => {
+                const id = parseInt(e.target.value);
+                const categoriaSeleccionada = categoriasList.find((c) => c.id === id);
+                setNuevoIngrediente({
+                  ...nuevoIngrediente,
+                  categoria: {
+                    id,
+                    denominacion: categoriaSeleccionada?.denominacion || "",
+                  },
+                });
+              }}
+              className="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+            >
+              <option value="" disabled>
+                Seleccione categoría
+              </option>
+              {categoriasList.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.denominacion}
+                </option>
+              ))}
+            </select>
             <input
               type="number"
               value={nuevoIngrediente.unidadMedida?.id || ""}
@@ -333,13 +370,31 @@ export default function Ingredientes() {
                 placeholder="Stock mínimo"
                 className="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
               />
-              <input
-                type="number"
-                value={formData.categoria?.id || ""}
-                onChange={(e) => setFormData({ ...formData, categoria: { id: parseInt(e.target.value), denominacion: formData.categoria?.denominacion || "" } })}
-                placeholder="ID Categoría"
+              <select
+                value={formData.categoria?.id ?? ""}
+                onChange={(e) => {
+                  const id = parseInt(e.target.value);
+                  const categoriaSeleccionada = categoriasList.find((c) => c.id === id);
+                  setFormData({
+                    ...formData,
+                    categoria: {
+                      id,
+                      denominacion: categoriaSeleccionada?.denominacion || "",
+                    },
+                  });
+                }}
                 className="w-full border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
-              />
+              >
+                <option value="" disabled>
+                  Seleccione categoría
+                </option>
+                {categoriasList.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.denominacion}
+                  </option>
+                ))}
+              </select>
+
               <input
                 type="number"
                 value={formData.unidadMedida?.id || ""}
