@@ -32,8 +32,11 @@ export class ArticuloService {
      */
     async getAllArticulosManufacturados(): Promise<ArticuloManufacturado[]> {
         // Axios espera un array de la interfaz de respuesta del backend
-        const response = await axios.get<IArticuloManufacturadoResponseDTO[]>(`${API_BASE_URL}/manufacturados`);
+        const response = await axios.get<IArticuloManufacturadoResponseDTO[]>(
+            `http://localhost:8080/api/articuloManufacturado/manufacturados`
+        );
         // Mapea los objetos planos JSON (interfaces) a instancias de la clase ArticuloManufacturado
+        console.log("Respuesta cruda del back:", response.data);
         return response.data.map(data => this.mapToArticuloManufacturado(data));
     }
 
@@ -45,7 +48,7 @@ export class ArticuloService {
     async getArticuloManufacturadoById(id: number): Promise<ArticuloManufacturado | null> {
         try {
             // Axios espera una única instancia de la interfaz de respuesta
-            const response = await axios.get<IArticuloManufacturadoResponseDTO>(`${API_BASE_URL}/manufacturados/${id}`);
+            const response = await axios.get<IArticuloManufacturadoResponseDTO>(`${API_BASE_URL}/articuloManufacturado/${id}`);
             return this.mapToArticuloManufacturado(response.data);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -63,7 +66,7 @@ export class ArticuloService {
     async createArticuloManufacturado(articulo: ArticuloManufacturado): Promise<ArticuloManufacturado> {
         // Axios serializa la instancia de clase a JSON.
         // La respuesta se tipa con la interfaz de respuesta del backend.
-        const response = await axios.post<IArticuloManufacturadoResponseDTO>(`${API_BASE_URL}/manufacturados`, articulo);
+        const response = await axios.post<IArticuloManufacturadoResponseDTO>(`${API_BASE_URL}/articuloManufacturado`, articulo);
         return this.mapToArticuloManufacturado(response.data);
     }
 
@@ -74,7 +77,7 @@ export class ArticuloService {
      * @returns Promesa que resuelve al ArticuloManufacturado actualizado.
      */
     async updateArticuloManufacturado(id: number, articulo: ArticuloManufacturado): Promise<ArticuloManufacturado> {
-        const response = await axios.put<IArticuloManufacturadoResponseDTO>(`${API_BASE_URL}/manufacturados/${id}`, articulo);
+        const response = await axios.put<IArticuloManufacturadoResponseDTO>(`${API_BASE_URL}/articuloManufacturado/${id}`, articulo);
         return this.mapToArticuloManufacturado(response.data);
     }
 
@@ -85,7 +88,7 @@ export class ArticuloService {
      */
     async deleteArticuloManufacturado(id: number): Promise<boolean> {
         try {
-            await axios.delete(`${API_BASE_URL}/${id}`); // El endpoint de borrado es general para Articulo
+            await axios.delete(`${API_BASE_URL}/articuloManufacturado/${id}`); // El endpoint de borrado es general para Articulo
             return true;
         } catch (error) {
             console.error("Error al eliminar artículo manufacturado:", error);
@@ -314,7 +317,9 @@ export class ArticuloService {
    */
 
     async uploadArticuloImagen(articuloId: number, file: File): Promise<Imagen> {
+
         const API_UPLOAD_URL = 'http://localhost:8080/api/uploads'; // URL base para subir imágenes
+
         const formData = new FormData();
         formData.append('file', file); // 'file' debe coincidir con el @RequestParam del backend
         formData.append('idArticulo', articuloId.toString()); // 'idArticulo' debe coincidir con el @RequestParam del backend
@@ -345,7 +350,7 @@ export class ArticuloService {
         // O que el endpoint general /manufacturados ya ha sido modificado en el backend para solo devolver activos.
         // Si tu backend modificó findAllManufacturados para devolver solo activos, puedes seguir usando getAllArticulosManufacturados.
         // Si tienes un endpoint específico en el backend como "/manufacturados/activos", úsalo aquí.
-        const response = await axios.get<IArticuloManufacturadoResponseDTO[]>(`${API_BASE_URL}/manufacturados`); // O /manufacturados/activos si lo creaste
+        const response = await axios.get<IArticuloManufacturadoResponseDTO[]>(`${API_BASE_URL}/articuloManufacturado/manufacturados`); // O /manufacturados/activos si lo creaste
         return response.data.map(data => this.mapToArticuloManufacturado(data));
     }
 }
