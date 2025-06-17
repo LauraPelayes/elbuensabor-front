@@ -75,17 +75,21 @@ export default function CheckoutPage() {
 
     try {
       const pedido: IPedidoDTO = {
-        clienteId: 1, // Reemplazá con el ID real del cliente logueado
-        domicilioEntregaId: deliveryType === TipoEnvio.DELIVERY ? 1 : undefined,
-        tipoEnvio: deliveryType,
-        formaPago: paymentMethod,
-        sucursalId: 1, // Reemplazá con la sucursal seleccionada
-        detallesPedidos: items.map((item) => ({
+        fechaPedido: new Date().toISOString().split('T')[0], // "YYYY-MM-DD"
+        estado: "A_CONFIRMAR",
+        tipoEnvio: deliveryType, // Ej: "DELIVERY"
+        formaPago: paymentMethod, // Ej: "MERCADO_PAGO"
+        total: Number(
+          items.reduce((acc, item) => acc + item.articulo.precioVenta * item.quantity, 0).toFixed(2)
+        ),
+        clienteId: 1, // ID real del cliente logueado
+        domicilioId: deliveryType === "DELIVERY" ? 1 : 1, // solo si es delivery
+        detalles: items.map((item) => ({
           cantidad: item.quantity,
-          articuloManufacturadoId: item.articulo.id,
-          articuloInsumoId: undefined, // Este valor debería ser mapeado correctamente
+          subTotal: Number((item.articulo.precioVenta * item.quantity).toFixed(2)),
+          articuloId: item.articulo.id,
         })),
-      }
+      };
 
       console.log("PEDIDO:", pedido)
 
@@ -93,7 +97,7 @@ export default function CheckoutPage() {
         try {
           // Create MercadoPago preference
           const preferenceId = await mercadoPagoService.createPreference(pedido)
-		      console.log("PREF ID ", preferenceId);
+          console.log("PREF ID ", preferenceId);
 
           // Store order in localStorage to retrieve after payment
           localStorage.setItem("pendingOrderData", JSON.stringify(pedido))
@@ -101,7 +105,7 @@ export default function CheckoutPage() {
           // Initialize MercadoPago checkout
           if (window.MercadoPago) {
             const mp = new window.MercadoPago(
-              import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY || "TEST-6be97ca2-e8f3-4833-a68b-42bbd8a6b9dd",
+              import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY || "APP_USR-60791df4-d103-4bbb-a057-869060eded77",
               {
                 locale: "es-AR",
               },
@@ -327,9 +331,8 @@ export default function CheckoutPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div
-                      className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${
-                        deliveryType === TipoEnvio.DELIVERY ? "border-orange-500" : "border-gray-200"
-                      }`}
+                      className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${deliveryType === TipoEnvio.DELIVERY ? "border-orange-500" : "border-gray-200"
+                        }`}
                       onClick={() => setDeliveryType(TipoEnvio.DELIVERY)}
                     >
                       <input
@@ -351,9 +354,8 @@ export default function CheckoutPage() {
                     </div>
 
                     <div
-                      className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${
-                        deliveryType === TipoEnvio.RETIRO_EN_LOCAL ? "border-orange-500" : "border-gray-200"
-                      }`}
+                      className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${deliveryType === TipoEnvio.RETIRO_EN_LOCAL ? "border-orange-500" : "border-gray-200"
+                        }`}
                       onClick={() => setDeliveryType(TipoEnvio.RETIRO_EN_LOCAL)}
                     >
                       <input
@@ -440,9 +442,8 @@ export default function CheckoutPage() {
 
                   <div className="space-y-4">
                     <div
-                      className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${
-                        paymentMethod === FormaPago.MERCADO_PAGO ? "border-orange-500" : "border-gray-200"
-                      }`}
+                      className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${paymentMethod === FormaPago.MERCADO_PAGO ? "border-orange-500" : "border-gray-200"
+                        }`}
                       onClick={() => setPaymentMethod(FormaPago.MERCADO_PAGO)}
                     >
                       <input
@@ -466,9 +467,8 @@ export default function CheckoutPage() {
 
                     {deliveryType === TipoEnvio.RETIRO_EN_LOCAL && (
                       <div
-                        className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${
-                          paymentMethod === FormaPago.EFECTIVO ? "border-orange-500" : "border-gray-200"
-                        }`}
+                        className={`relative border-2 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition-all ${paymentMethod === FormaPago.EFECTIVO ? "border-orange-500" : "border-gray-200"
+                          }`}
                         onClick={() => setPaymentMethod(FormaPago.EFECTIVO)}
                       >
                         <input

@@ -315,7 +315,9 @@ export class ArticuloService {
    */
 
     async uploadArticuloImagen(articuloId: number, file: File): Promise<Imagen> {
-        const API_UPLOAD_URL = 'http://localhost:8080/api/upload'; // URL base para subir imágenes
+
+        const API_UPLOAD_URL = 'http://localhost:8080/api/uploads'; // URL base para subir imágenes
+
         const formData = new FormData();
         formData.append('file', file); // 'file' debe coincidir con el @RequestParam del backend
         formData.append('idArticulo', articuloId.toString()); // 'idArticulo' debe coincidir con el @RequestParam del backend
@@ -323,7 +325,7 @@ export class ArticuloService {
         try {
             // Endpoint de subida de imagen en el backend.
             // Asumiendo que el backend tiene un controlador para manejar uploads,
-            // ej. POST /api/v1/uploads/articulo-imagen
+            // ej. POST /api/uploads/articulo-imagen
             const response = await axios.post<Imagen>(`${API_UPLOAD_URL}/articulo-imagen`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Importante para enviar archivos
