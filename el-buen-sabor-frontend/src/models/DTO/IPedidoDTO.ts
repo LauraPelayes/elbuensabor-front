@@ -1,10 +1,13 @@
 export interface IPedidoDTO {
+  fechaPedido: string
+  total: number
+  estado: string
   clienteId: number
-  domicilioEntregaId?: number // Optional, solo requerido si tipoEnvio === 'DELIVERY'
+  domicilioId?: number // Optional, solo requerido si tipoEnvio === 'DELIVERY'
   tipoEnvio: TipoEnvio
   formaPago: FormaPago
-  sucursalId: number
-  detallesPedidos: ICreateDetallePedidoDTO[]
+  // sucursalId: number
+  detalles: ICreateDetallePedidoDTO[]
 }
 
 export enum TipoEnvio {
@@ -22,5 +25,5 @@ export enum FormaPago {
 export interface ICreateDetallePedidoDTO {
   cantidad: number
   articuloManufacturadoId?: number | null
-  articuloInsumoId?: number | null
+  subtotal?: number | null
 }

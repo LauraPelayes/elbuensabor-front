@@ -19,7 +19,7 @@ import type { IArticuloManufacturadoDetalleResponseDTO } from '../models/DTO/IAA
 import type { ICategoriaResponseDTO } from '../models/DTO/ICategoriaResponseDTO';
 import type { IUnidadMedidaResponseDTO } from '../models/DTO/IUnidadMedidaResponseDTO';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1/articulos'; // La URL base de tu backend de artículos
+const API_BASE_URL = 'http://localhost:8080/api/articuloManufacturado'; // La URL base de tu backend de artículos
 
 export class ArticuloService {
 
@@ -289,7 +289,7 @@ export class ArticuloService {
 
 
     async getAllCategorias(): Promise<Categoria[]> {
-        const response = await axios.get<ICategoriaResponseDTO[]>(`http://localhost:8080/api/v1/categorias`);
+        const response = await axios.get<ICategoriaResponseDTO[]>(`http://localhost:8080/api/categorias`);
         return response.data.map(data =>
             new Categoria(data.denominacion, data.id, data.categoriaPadreId, data.sucursalIds)
         );
@@ -300,7 +300,7 @@ export class ArticuloService {
      * @returns Promesa que resuelve a una lista de UnidadMedida.
      */
     async getAllUnidadesMedida(): Promise<UnidadMedida[]> {
-        const response = await axios.get<IUnidadMedidaResponseDTO[]>(`http://localhost:8080/api/v1/unidades-medida`);
+        const response = await axios.get<IUnidadMedidaResponseDTO[]>(`http://localhost:8080/api/unidades-medida`);
         return response.data.map(data =>
             new UnidadMedida(data.denominacion, data.id)
         );
@@ -312,7 +312,7 @@ export class ArticuloService {
    */
 
     async uploadArticuloImagen(articuloId: number, file: File): Promise<Imagen> {
-        const API_UPLOAD_URL = 'http://localhost:8080/api/v1/uploads'; // URL base para subir imágenes
+        const API_UPLOAD_URL = 'http://localhost:8080/api/uploads'; // URL base para subir imágenes
         const formData = new FormData();
         formData.append('file', file); // 'file' debe coincidir con el @RequestParam del backend
         formData.append('idArticulo', articuloId.toString()); // 'idArticulo' debe coincidir con el @RequestParam del backend
@@ -320,7 +320,7 @@ export class ArticuloService {
         try {
             // Endpoint de subida de imagen en el backend.
             // Asumiendo que el backend tiene un controlador para manejar uploads,
-            // ej. POST /api/v1/uploads/articulo-imagen
+            // ej. POST /api/uploads/articulo-imagen
             const response = await axios.post<Imagen>(`${API_UPLOAD_URL}/articulo-imagen`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Importante para enviar archivos
