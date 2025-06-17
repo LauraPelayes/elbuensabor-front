@@ -18,7 +18,7 @@ const ArticuloManufacturadoList: React.FC = () => {
   const fetchArticulos = async () => {
     try {
       setLoading(true);
-      const data = await articuloService.findAllArticulosManufacturadosActivos();//me falta esa función en el servicio
+      const data = await articuloService.getAllArticulosManufacturados();//me falta esa función en el servicio
       setArticulosManufacturados(data);
     } catch (err) {
       setError('Error al cargar los artículos manufacturados.');
@@ -30,7 +30,7 @@ const ArticuloManufacturadoList: React.FC = () => {
 
   useEffect(() => {
     fetchArticulos();
-  }, []); // Se ejecuta solo una vez al montar
+  }, []);
 
   const handleCreateClick = () => {
     setSelectedArticulo(null); // Limpiar cualquier artículo seleccionado para crear uno nuevo
