@@ -19,7 +19,8 @@ import type { IArticuloManufacturadoDetalleResponseDTO } from '../models/DTO/IAA
 import type { ICategoriaResponseDTO } from '../models/DTO/ICategoriaResponseDTO';
 import type { IUnidadMedidaResponseDTO } from '../models/DTO/IUnidadMedidaResponseDTO';
 
-const API_BASE_URL = 'http://localhost:8080/api/articuloManufacturado'; // La URL base de tu backend de artículos
+const API_BASE_URL = 'http://localhost:8080/api/articuloManufacturado';
+const API_INSUMO_BASE_URL = 'http://localhost:8080/api/articuloInsumo';
 
 export class ArticuloService {
 
@@ -110,7 +111,7 @@ export class ArticuloService {
      * @returns Promesa que resuelve a una lista de ArticuloInsumo.
      */
     async getAllArticulosInsumo(): Promise<ArticuloInsumo[]> {
-        const response = await axios.get<IArticuloInsumoResponseDTO[]>(`${API_BASE_URL}/insumos`);
+        const response = await axios.get<IArticuloInsumoResponseDTO[]>(`${API_INSUMO_BASE_URL}/insumos`);
         return response.data.map(data => this.mapToArticuloInsumo(data));
     }
 
@@ -121,7 +122,7 @@ export class ArticuloService {
      */
     async getArticuloInsumoById(id: number): Promise<ArticuloInsumo | null> {
         try {
-            const response = await axios.get<IArticuloInsumoResponseDTO>(`${API_BASE_URL}/insumos/${id}`);
+            const response = await axios.get<IArticuloInsumoResponseDTO>(`${API_INSUMO_BASE_URL}/insumos/${id}`);
             return this.mapToArticuloInsumo(response.data);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -137,7 +138,8 @@ export class ArticuloService {
      * @returns Promesa que resuelve al ArticuloInsumo creado.
      */
     async createArticuloInsumo(insumo: ArticuloInsumo): Promise<ArticuloInsumo> {
-        const response = await axios.post<IArticuloInsumoResponseDTO>(`${API_BASE_URL}/insumos`, insumo);
+        const response = await axios.post<IArticuloInsumoResponseDTO>(`${API_INSUMO_BASE_URL}`, insumo);
+        console.log("Insumo creado: ", response.data)
         return this.mapToArticuloInsumo(response.data);
     }
 
@@ -148,7 +150,7 @@ export class ArticuloService {
      * @returns Promesa que resuelve al ArticuloInsumo actualizado.
      */
     async updateArticuloInsumo(id: number, insumo: ArticuloInsumo): Promise<ArticuloInsumo> {
-        const response = await axios.put<IArticuloInsumoResponseDTO>(`${API_BASE_URL}/insumos/${id}`, insumo);
+        const response = await axios.put<IArticuloInsumoResponseDTO>(`${API_INSUMO_BASE_URL}/${id}`, insumo);
         return this.mapToArticuloInsumo(response.data);
     }
 
@@ -159,7 +161,7 @@ export class ArticuloService {
      */
     async getArticulosInsumoByStockBajo(stockMinimoReferencia?: number): Promise<ArticuloInsumo[]> {
         const params = stockMinimoReferencia ? { stockMinimoReferencia } : {};
-        const response = await axios.get<IArticuloInsumoResponseDTO[]>(`${API_BASE_URL}/insumos/stock-bajo`, { params });
+        const response = await axios.get<IArticuloInsumoResponseDTO[]>(`${API_INSUMO_BASE_URL}/insumos/stock-bajo`, { params });
         return response.data.map(data => this.mapToArticuloInsumo(data));
     }
 

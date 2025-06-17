@@ -102,28 +102,10 @@ export default function CheckoutPage() {
           // Store order in localStorage to retrieve after payment
           localStorage.setItem("pendingOrderData", JSON.stringify(pedido))
 
-          // Initialize MercadoPago checkout
-          if (window.MercadoPago) {
-            const mp = new window.MercadoPago(
-              import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY || "APP_USR-60791df4-d103-4bbb-a057-869060eded77",
-              {
-                locale: "es-AR",
-              },
-            )
-            console.log("Mercado Pago: ", mp)
-            // Create checkout button
-            const checkout = mp.checkout({
-              preference: {
-                id: preferenceId,
-              },
-              autoOpen: true, // Opens payment modal automatically
-            })
+          // console.log(JSON.parse(preferenceId));
 
-            // The rest will be handled by MercadoPago redirect
-            return
-          } else {
-            throw new Error("MercadoPago SDK no está disponible")
-          }
+          window.location.href = JSON.parse(preferenceId).initPoint;
+
         } catch (error) {
           console.error("Error al procesar pago con MercadoPago:", error)
           alert("Error al procesar el pago con MercadoPago. Por favor intenta nuevamente.")
