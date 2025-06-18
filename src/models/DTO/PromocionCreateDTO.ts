@@ -15,4 +15,11 @@ export interface PromocionCreateDTO {
     montoMinimo?: number;
     articuloRegaloId?: number;
     imagenId?: number;
+    articuloManufacturadoIds: number[];
+    articulos: {
+        articuloId: number;
+        cantidad: number;
+    }[];
 }
+
+

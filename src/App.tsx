@@ -12,6 +12,7 @@ import LoginPage from './pages/auth/login-page';
 import RegisterPage from './pages/auth/register-page';
 import ExplorarPage from './pages/explore/explore-page';
 import PromocionPage from "./pages/PromocionPage";
+import PromocionForm from './components/promocion/PromocionForm';
 
 
 function App() {
@@ -30,6 +31,8 @@ function App() {
         {/* Explore */}
         <Route path="/explore" element={<ExplorarPage />} />
         <Route path="/promociones" element={<PromocionPage />} />
+        <Route path="/promociones/crear" element={<PromocionForm />} />
+
       </Routes>
     </Router>
   );
