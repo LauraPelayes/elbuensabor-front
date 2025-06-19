@@ -13,6 +13,8 @@ import RegisterPage from './pages/auth/register-page';
 import ExplorarPage from './pages/explore/explore-page';
 import PromocionPage from "./pages/PromocionPage";
 import PromocionForm from './components/promocion/PromocionForm';
+import RankingProductosPage from "./pages/RankingProductosPage";
+
 
 
 function App() {
@@ -32,6 +34,7 @@ function App() {
         <Route path="/explore" element={<ExplorarPage />} />
         <Route path="/promociones" element={<PromocionPage />} />
         <Route path="/promociones/crear" element={<PromocionForm />} />
+        <Route path="/ranking" element={<RankingProductosPage />} />
 
       </Routes>
     </Router>
